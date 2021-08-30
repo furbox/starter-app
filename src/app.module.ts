@@ -6,6 +6,8 @@ import { AppService } from './app.service';
 import { Configuration } from './config/config.keys';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
+import { UserModule } from './user/user.module';
+import { RoleModule } from './role/role.module';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { ConfigService } from './config/config.service';
       debug: false,
     }),
     ConfigModule,
+    UserModule,
+    RoleModule,
   ],
   providers: [AppService, AppResolver],
 })
