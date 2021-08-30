@@ -1,14 +1,20 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
+import { GraphQLModule } from '@nestjs/graphql';
+import { AppResolver } from './app.resolver';
 import { AppService } from './app.service';
 import { Configuration } from './config/config.keys';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 
 @Module({
-  imports: [ConfigModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    GraphQLModule.forRoot({
+      autoSchemaFile: true,
+      debug: false,
+    }),
+    ConfigModule,
+  ],
+  providers: [AppService, AppResolver],
 })
 export class AppModule {
   static port: number | string;
