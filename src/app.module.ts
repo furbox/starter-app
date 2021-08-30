@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppResolver } from './app.resolver';
 import { AppService } from './app.service';
 import { Configuration } from './config/config.keys';
@@ -8,6 +9,7 @@ import { ConfigService } from './config/config.service';
 
 @Module({
   imports: [
+    MongooseModule.forRoot('mongodb://localhost:27017/starter-app'),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
       debug: false,

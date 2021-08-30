@@ -20,6 +20,7 @@ export class ConfigService {
     } else {
       this.envConfig = {
         PORT: process.env.PORT,
+        MONGO_URL: process.env.MONGO_URL,
       };
     }
   }
