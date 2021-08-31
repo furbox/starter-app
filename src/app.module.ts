@@ -8,6 +8,7 @@ import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { UserModule } from './user/user.module';
 import { RoleModule } from './role/role.module';
+import { RoleService } from './role/role.service';
 
 @Module({
   imports: [
@@ -24,7 +25,11 @@ import { RoleModule } from './role/role.module';
 })
 export class AppModule {
   static port: number | string;
-  constructor(private readonly _configService: ConfigService) {
+  constructor(
+    private readonly _roleService: RoleService,
+    private readonly _configService: ConfigService,
+  ) {
     AppModule.port = this._configService.get(Configuration.PORT);
+    this._roleService.initRoles();
   }
 }

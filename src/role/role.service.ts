@@ -1,7 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { GraphQLError } from 'graphql';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateRoleInput } from './role-inputs.dto';
 import { Role, RoleDocument } from './role.entity';
 
@@ -11,6 +15,33 @@ export class RoleService {
   constructor(
     @InjectModel(Role.name) private readonly _RoleModel: Model<RoleDocument>,
   ) {}
+
+  async initRoles() {
+    try {
+      const count = await this._RoleModel.estimatedDocumentCount();
+
+      if (count > 0) return;
+
+      const values = await Promise.all([
+        new this._RoleModel({
+          name: 'ADMINISTRATOR',
+          description: 'Role created to manage the entire system',
+        }).save(),
+        new this._RoleModel({
+          name: 'OPERATOR',
+          description: 'Role created to operate various areas of the system',
+        }).save(),
+      ]);
+      this.logger.verbose(
+        `Roles created successfully at system startup ${JSON.stringify(
+          values,
+        )}`,
+      );
+    } catch (error) {
+      this.error('Init Create Roles', {}, error);
+      throw new InternalServerErrorException();
+    }
+  }
 
   async create(createRoleInput: CreateRoleInput) {
     try {
@@ -22,11 +53,59 @@ export class RoleService {
       } else {
         return await new this._RoleModel(createRoleInput).save();
       }
-    } catch (err) {
-      this.logger.error(
-        `Error to create role ${JSON.stringify(createRoleInput)}`,
-        err,
-      );
+    } catch (error) {
+      this.error('Create role', createRoleInput, error);
+      throw new InternalServerErrorException();
     }
+  }
+
+  async get(_id: Types.ObjectId) {
+    try {
+      const role = await this._RoleModel.findById(_id);
+      if (!role) {
+        throw new GraphQLError('This role does not exist');
+      }
+      return role;
+    } catch (error) {
+      this.error('Get role', _id, error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getAll() {
+    try {
+      return await this._RoleModel.find().exec();
+    } catch (error) {
+      this.error('GetAll role', {}, error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async update(_id: Types.ObjectId, updateRoleInput: CreateRoleInput) {
+    try {
+      const role = await this.get(_id);
+      role.name = updateRoleInput.name;
+      role.description = updateRoleInput.description;
+      role.updatedAt = Date.now().toString();
+      await role.save();
+      return role;
+    } catch (error) {
+      this.error('Update role', { _id, updateRoleInput }, error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async delete(_id: Types.ObjectId) {
+    try {
+      const role = await this.get(_id);
+      return await this._RoleModel.findByIdAndRemove(role.id);
+    } catch (error) {
+      this.error('Delete role', _id, error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  private error(info: string, data: any, error: any) {
+    this.logger.error(`Error: ${info}, ${JSON.stringify(data)}`, error);
   }
 }
