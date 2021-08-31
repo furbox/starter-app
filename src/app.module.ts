@@ -12,7 +12,13 @@ import { RoleService } from './role/role.service';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/starter-app'),
+    MongooseModule.forRoot('mongodb://localhost:27017/starter-app', {
+      connectionFactory: (connection) => {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        connection.plugin(require('mongoose-autopopulate'));
+        return connection;
+      },
+    }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
       debug: false,

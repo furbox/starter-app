@@ -6,7 +6,17 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Role.name, schema: RoleSchema }]),
+    MongooseModule.forFeatureAsync([
+      {
+        name: Role.name,
+        useFactory: () => {
+          const schema = RoleSchema;
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          schema.plugin(require('mongoose-autopopulate'));
+          return schema;
+        },
+      },
+    ]),
   ],
   providers: [RoleService, RoleResolver],
   exports: [RoleService],

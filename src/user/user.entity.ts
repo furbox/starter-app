@@ -1,16 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { Document, Types } from 'mongoose';
-
-enum Roles {
-  Admin = 'Admin',
-  Basic = 'Basic',
-}
-
-registerEnumType(Roles, {
-  name: 'Roles',
-  description: 'Roles para admintrador crear proyectos y usuarios',
-});
+import { Role } from '../role/role.entity';
+import { RoleTypes } from '../role/role.enum';
 
 @ObjectType()
 @Schema()
@@ -31,20 +23,20 @@ export class User {
   email: string;
 
   @Field(() => String)
-  @Prop({ type: Date, timestamp: true })
+  @Prop({ type: Date, timestamp: true, default: Date.now() })
   createAt: string;
 
   @Field(() => String)
-  @Prop({ type: Date, timestamp: true })
+  @Prop({ type: Date, timestamp: true, default: Date.now() })
   updateAt: string;
 
   @Field(() => String)
-  @Prop({ type: Date, timestamp: true })
+  @Prop({ type: Date, timestamp: true, default: Date.now() })
   lastdateLogin: string;
 
-  @Field(() => Roles, { defaultValue: Roles.Admin, nullable: true })
-  @Prop()
-  roles?: string;
+  @Field(() => Role)
+  @Prop({ type: Types.ObjectId, ref: 'roles', autopopulate: true })
+  role: Role;
 
   @Field(() => Boolean)
   @Prop({ type: Boolean, default: false })
