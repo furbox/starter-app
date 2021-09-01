@@ -20,7 +20,7 @@ import { RoleService } from './role/role.service';
       },
     }),
     GraphQLModule.forRoot({
-      autoSchemaFile: true,
+      autoSchemaFile: 'schema.gql',
       debug: false,
     }),
     ConfigModule,

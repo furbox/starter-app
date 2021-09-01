@@ -3,21 +3,16 @@ import { UserService } from './user.service';
 import { UserResolver } from './user.resolver';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './user.entity';
+import { Role, RoleSchema } from '../role/role.entity';
+import { RoleService } from '../role/role.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeatureAsync([
-      {
-        name: User.name,
-        useFactory: () => {
-          const schema = UserSchema;
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
-          schema.plugin(require('mongoose-autopopulate'));
-          return schema;
-        },
-      },
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: Role.name, schema: RoleSchema },
     ]),
   ],
-  providers: [UserService, UserResolver],
+  providers: [UserService, UserResolver, RoleService],
 })
 export class UserModule {}

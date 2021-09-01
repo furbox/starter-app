@@ -1,14 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Field, ObjectType } from '@nestjs/graphql';
-import { Document, Types } from 'mongoose';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+import * as mongoose from 'mongoose';
 import { Role } from '../role/role.entity';
-import { RoleTypes } from '../role/role.enum';
 
 @ObjectType()
 @Schema()
 export class User {
-  @Field(() => String)
-  _id: Types.ObjectId;
+  @Field(() => ID)
+  _id: string;
 
   @Field(() => String)
   @Prop()
@@ -24,30 +23,30 @@ export class User {
 
   @Field(() => String)
   @Prop({ type: Date, timestamp: true, default: Date.now() })
-  createAt: string;
+  createdAt: string;
 
   @Field(() => String)
   @Prop({ type: Date, timestamp: true, default: Date.now() })
-  updateAt: string;
+  updatedAt: string;
 
   @Field(() => String)
   @Prop({ type: Date, timestamp: true, default: Date.now() })
   lastdateLogin: string;
 
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Role.name })
   @Field(() => Role)
-  @Prop({ type: Types.ObjectId, ref: 'roles', autopopulate: true })
-  role: Role;
+  role: Role | string;
 
   @Field(() => Boolean)
   @Prop({ type: Boolean, default: false })
   activationCode: boolean;
 
   @Field(() => String)
-  @Prop()
+  @Prop({ default: '' })
   codeValidate: string;
 
-  @Field(() => Number, { defaultValue: 0, nullable: true })
-  @Prop()
+  @Field(() => Number)
+  @Prop({ default: 0 })
   countlogin: number;
 
   @Field(() => Boolean)
@@ -55,5 +54,5 @@ export class User {
   status: boolean;
 }
 
-export type UserDocument = User & Document;
+export type UserDocument = User & mongoose.Document;
 export const UserSchema = SchemaFactory.createForClass(User);

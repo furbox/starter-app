@@ -1,0 +1,51 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Role {
+  _id: ID!
+  name: String!
+  description: String!
+  createdAt: String
+  updatedAt: String
+}
+
+type User {
+  _id: ID!
+  fullName: String!
+  password: String!
+  email: String!
+  createdAt: String!
+  updatedAt: String!
+  lastdateLogin: String!
+  role: Role!
+  activationCode: Boolean!
+  codeValidate: String!
+  countlogin: Float!
+  status: Boolean!
+}
+
+type Query {
+  getHello: String!
+  findAllRoles: [Role!]!
+  findOneRole(_id: String!): Role!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): User!
+  createRole(createRoleInput: CreateRoleInput!): Role!
+  removeRole(_id: String!): Role!
+  UpdateRoleInput(updateRoleInput: CreateRoleInput!, _id: String!): Role!
+}
+
+input CreateUserInput {
+  fullName: String!
+  email: String!
+  password: String!
+  role: String!
+}
+
+input CreateRoleInput {
+  name: String!
+  description: String!
+}

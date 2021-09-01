@@ -25,10 +25,12 @@ export class UserService {
       if (isUser) {
         throw new GraphQLError('User already exists');
       } else {
-        createUserInput.password = await bcrypt
-          .hash(createUserInput.password, 10)
-          .then((r) => r);
-        return await new this.UserModel(createUserInput).save();
+        createUserInput.password = await bcrypt.hash(
+          createUserInput.password,
+          10,
+        );
+        const user = await this.UserModel.create(createUserInput);
+        return user;
       }
     } catch (error) {
       this._error('Create user', createUserInput, error);
