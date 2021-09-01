@@ -9,6 +9,7 @@ import { Model } from 'mongoose';
 import { CreateUserInput } from './user-inputs.dto';
 import { User, UserDocument } from './user.entity';
 import * as bcrypt from 'bcrypt';
+import { Role } from '../role/role.entity';
 
 @Injectable()
 export class UserService {
@@ -29,8 +30,7 @@ export class UserService {
           createUserInput.password,
           10,
         );
-        const user = await this.UserModel.create(createUserInput);
-        return user;
+        return await this.UserModel.create(createUserInput);
       }
     } catch (error) {
       this._error('Create user', createUserInput, error);
