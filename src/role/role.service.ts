@@ -43,7 +43,7 @@ export class RoleService {
     }
   }
 
-  async create(createRoleInput: CreateRoleInput) {
+  async create(createRoleInput: CreateRoleInput): Promise<Role> {
     try {
       const isRole = await this._RoleModel.findOne({
         name: createRoleInput.name,
@@ -59,7 +59,7 @@ export class RoleService {
     }
   }
 
-  async get(_id: Types.ObjectId) {
+  async get(_id: Types.ObjectId): Promise<Role> {
     try {
       const role = await this._RoleModel.findById(_id);
       if (!role) {
@@ -72,7 +72,7 @@ export class RoleService {
     }
   }
 
-  async getAll() {
+  async getAll(): Promise<Role[]> {
     try {
       return await this._RoleModel.find().exec();
     } catch (error) {
@@ -81,24 +81,18 @@ export class RoleService {
     }
   }
 
-  async update(_id: Types.ObjectId, updateRoleInput: CreateRoleInput) {
+  async update(_id: Types.ObjectId, input: CreateRoleInput): Promise<Role> {
     try {
-      const role = await this.get(_id);
-      role.name = updateRoleInput.name;
-      role.description = updateRoleInput.description;
-      role.updatedAt = Date.now().toString();
-      await role.save();
-      return role;
+      return await this._RoleModel.findByIdAndUpdate(_id, input, { new: true });
     } catch (error) {
-      this.error('Update role', { _id, updateRoleInput }, error);
+      this.error('Update role', { _id, input }, error);
       throw new InternalServerErrorException();
     }
   }
 
   async delete(_id: Types.ObjectId) {
     try {
-      const role = await this.get(_id);
-      return await this._RoleModel.findByIdAndRemove(role.id);
+      return await this._RoleModel.findByIdAndRemove(_id);
     } catch (error) {
       this.error('Delete role', _id, error);
       throw new InternalServerErrorException();

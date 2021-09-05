@@ -27,15 +27,15 @@ type User {
 
 type Query {
   getHello: String!
-  findAllRoles: [Role!]!
+  findAllRole: [Role!]!
   findOneRole(_id: String!): Role!
 }
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
-  createRole(createRoleInput: CreateRoleInput!): Role!
-  removeRole(_id: String!): Role!
-  UpdateRoleInput(updateRoleInput: CreateRoleInput!, _id: String!): Role!
+  createRole(input: CreateRoleInput!): Role!
+  deleteRole(_id: String!): Role!
+  updateRole(input: CreateRoleInput!, _id: String!): Role!
 }
 
 input CreateUserInput {

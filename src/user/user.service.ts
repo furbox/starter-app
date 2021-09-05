@@ -1,15 +1,14 @@
 import {
+  ConflictException,
   Injectable,
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { GraphQLError } from 'graphql';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateUserInput } from './user-inputs.dto';
 import { User, UserDocument } from './user.entity';
 import * as bcrypt from 'bcrypt';
-import { Role } from '../role/role.entity';
 
 @Injectable()
 export class UserService {
@@ -24,16 +23,33 @@ export class UserService {
         email: createUserInput.email,
       });
       if (isUser) {
-        throw new GraphQLError('User already exists');
+        throw new ConflictException('User already exists');
       } else {
         createUserInput.password = await bcrypt.hash(
           createUserInput.password,
           10,
         );
-        return await this.UserModel.create(createUserInput);
+        const user = new this.UserModel(createUserInput);
+        await user.save();
+        return await this.get(user._id);
       }
     } catch (error) {
       this._error('Create user', createUserInput, error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async get(_id: Types.ObjectId) {
+    try {
+      const user = await this.UserModel.findOne({
+        _id,
+        status: false,
+      }).populate({
+        path: 'role',
+      });
+      return user;
+    } catch (error) {
+      this._error('Get user', _id, error);
       throw new InternalServerErrorException();
     }
   }

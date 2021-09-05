@@ -4,10 +4,10 @@ import * as mongoose from 'mongoose';
 import { Role } from '../role/role.entity';
 
 @ObjectType()
-@Schema()
+@Schema({ timestamps: true, versionKey: false })
 export class User {
   @Field(() => ID)
-  _id: string;
+  _id: mongoose.Types.ObjectId;
 
   @Field(() => String)
   @Prop()

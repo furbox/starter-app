@@ -3,16 +3,21 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppResolver } from './app.resolver';
 import { AppService } from './app.service';
-import { Configuration } from './config/config.keys';
-import { ConfigModule } from './config/config.module';
-import { ConfigService } from './config/config.service';
+// import { Configuration } from './config/config.keys';
+import { ConfigModule } from '@nestjs/config';
+// import { ConfigService } from './config/config.service';
 import { UserModule } from './user/user.module';
 import { RoleModule } from './role/role.module';
 import { RoleService } from './role/role.service';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/starter-app', {
+    ConfigModule.forRoot(),
+    MongooseModule.forRoot(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: false,
       connectionFactory: (connection) => {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         connection.plugin(require('mongoose-autopopulate'));
@@ -23,7 +28,6 @@ import { RoleService } from './role/role.service';
       autoSchemaFile: 'schema.gql',
       debug: false,
     }),
-    ConfigModule,
     UserModule,
     RoleModule,
   ],
@@ -31,11 +35,8 @@ import { RoleService } from './role/role.service';
 })
 export class AppModule {
   static port: number | string;
-  constructor(
-    private readonly _roleService: RoleService,
-    private readonly _configService: ConfigService,
-  ) {
-    AppModule.port = this._configService.get(Configuration.PORT);
+  constructor(private readonly _roleService: RoleService) {
+    AppModule.port = process.env.PORT;
     this._roleService.initRoles();
   }
 }

@@ -11,54 +11,34 @@ export class RoleResolver {
   constructor(private readonly _roleService: RoleService) {}
 
   @Mutation(() => Role)
-  async createRole(@Args('createRoleInput') createRoleInput: CreateRoleInput) {
-    try {
-      return await this._roleService.create(createRoleInput);
-    } catch (error) {
-      this.error('Create role', createRoleInput, error);
-    }
+  createRole(@Args('input') input: CreateRoleInput): Promise<Role> {
+    return this._roleService.create(input);
   }
 
   @Query(() => [Role])
-  async findAllRoles() {
-    try {
-      return await this._roleService.getAll();
-    } catch (error) {
-      this.error('GetAll role', {}, error);
-    }
+  findAllRole(): Promise<Role[]> {
+    return this._roleService.getAll();
   }
 
   @Query(() => Role)
-  async findOneRole(@Args('_id', { type: () => String }) _id: Types.ObjectId) {
-    try {
-      return await this._roleService.get(_id);
-    } catch (error) {
-      this.error('Get role', _id, error);
-    }
-  }
-
-  @Mutation(() => Role)
-  async removeRole(@Args('_id', { type: () => String }) _id: Types.ObjectId) {
-    try {
-      return await this._roleService.delete(_id);
-    } catch (error) {
-      this.error('Delete role', _id, error);
-    }
-  }
-
-  @Mutation(() => Role)
-  async UpdateRoleInput(
+  findOneRole(
     @Args('_id', { type: () => String }) _id: Types.ObjectId,
-    @Args('updateRoleInput') updateRoleInput: CreateRoleInput,
-  ) {
-    try {
-      return await this._roleService.update(_id, updateRoleInput);
-    } catch (error) {
-      this.error('Update role', _id, error);
-    }
+  ): Promise<Role> {
+    return this._roleService.get(_id);
   }
 
-  private error(info: string, data: any, error: any) {
-    this.logger.error(`Error: ${info}, ${JSON.stringify(data)}`, error);
+  @Mutation(() => Role)
+  deleteRole(
+    @Args('_id', { type: () => String }) _id: Types.ObjectId,
+  ): Promise<Role> {
+    return this._roleService.delete(_id);
+  }
+
+  @Mutation(() => Role)
+  updateRole(
+    @Args('_id', { type: () => String }) _id: Types.ObjectId,
+    @Args('input') input: CreateRoleInput,
+  ): Promise<Role> {
+    return this._roleService.update(_id, input);
   }
 }

@@ -1,19 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Field, ObjectType, ID } from '@nestjs/graphql';
-import { Document } from 'mongoose';
+import * as mongoose from 'mongoose';
 
 @ObjectType()
-@Schema()
+@Schema({ timestamps: true, versionKey: false })
 export class Role {
   @Field(() => ID)
   _id: string;
 
-  @Field(() => String)
-  @Prop()
+  @Field(() => String, { nullable: false })
+  @Prop({ required: true })
   name: string;
 
-  @Field(() => String)
-  @Prop()
+  @Field(() => String, { nullable: false })
+  @Prop({ required: true })
   description: string;
 
   @Field(() => String, { nullable: true })
@@ -25,5 +25,5 @@ export class Role {
   updatedAt: string;
 }
 
-export type RoleDocument = Role & Document;
+export type RoleDocument = Role & mongoose.Document;
 export const RoleSchema = SchemaFactory.createForClass(Role);
