@@ -1,13 +1,15 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Role } from './role.entity';
 import { RoleService } from './role.service';
-import { CreateRoleInput } from './role-inputs.dto';
-import { Logger } from '@nestjs/common';
+import {
+  AllRolesRead,
+  CreateRoleInput,
+  PaginationInput,
+} from './role-inputs.dto';
 import { Types } from 'mongoose';
 
 @Resolver(() => Role)
 export class RoleResolver {
-  private logger = new Logger('RoleService');
   constructor(private readonly _roleService: RoleService) {}
 
   @Mutation(() => Role)
@@ -16,8 +18,12 @@ export class RoleResolver {
   }
 
   @Query(() => [Role])
-  findAllRole(): Promise<Role[]> {
-    return this._roleService.getAll();
+  findAllRole(@Args('input') input: PaginationInput): Promise<Role[]> {
+    try {
+      return this._roleService.getAll(input);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @Query(() => Role)

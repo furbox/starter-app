@@ -6,7 +6,11 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { GraphQLError } from 'graphql';
 import { Model, Types } from 'mongoose';
-import { CreateRoleInput } from './role-inputs.dto';
+import {
+  AllRolesRead,
+  CreateRoleInput,
+  PaginationInput,
+} from './role-inputs.dto';
 import { Role, RoleDocument } from './role.entity';
 
 @Injectable()
@@ -72,9 +76,15 @@ export class RoleService {
     }
   }
 
-  async getAll(): Promise<Role[]> {
+  async getAll(input: PaginationInput): Promise<Role[]> {
     try {
-      return await this._RoleModel.find().exec();
+      input.limit ? input.limit : 5;
+      input.page ? input.page : 0;
+      const [total, roles] = await Promise.all([
+        this._RoleModel.countDocuments(),
+        this._RoleModel.find().skip(input.page).limit(input.limit),
+      ]);
+      return roles;
     } catch (error) {
       this.error('GetAll role', {}, error);
       throw new InternalServerErrorException();

@@ -15,6 +15,7 @@ type User {
   fullName: String!
   password: String!
   email: String!
+  img: String!
   createdAt: String!
   updatedAt: String!
   lastdateLogin: String!
@@ -27,8 +28,13 @@ type User {
 
 type Query {
   getHello: String!
-  findAllRole: [Role!]!
+  findAllRole(input: PaginationInput!): [Role!]!
   findOneRole(_id: String!): Role!
+}
+
+input PaginationInput {
+  limit: Float!
+  page: Float!
 }
 
 type Mutation {
