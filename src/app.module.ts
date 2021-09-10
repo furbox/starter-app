@@ -9,6 +9,10 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { RoleModule } from './role/role.module';
 import { RoleService } from './role/role.service';
+import { AuthModule } from './auth/auth.module';
+import { PermissionModule } from './permission/permission.module';
+import { ModuleModule } from './module/module.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -30,6 +34,9 @@ import { RoleService } from './role/role.service';
     }),
     UserModule,
     RoleModule,
+    AuthModule,
+    ModuleModule,
+    PermissionModule,
   ],
   providers: [AppService, AppResolver],
 })

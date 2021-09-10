@@ -6,11 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { GraphQLError } from 'graphql';
 import { Model, Types } from 'mongoose';
-import {
-  AllRolesRead,
-  CreateRoleInput,
-  PaginationInput,
-} from './role-inputs.dto';
+import { CreateRoleInput, PaginationInput } from './role-inputs.dto';
 import { Role, RoleDocument } from './role.entity';
 
 @Injectable()

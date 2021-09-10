@@ -25,6 +25,7 @@
     "@nestjs/config": "^1.0.1",
     "@nestjs/core": "^8.0.0",
     "@nestjs/graphql": "^9.0.2",
+    "@nestjs/mapped-types": "*",
     "@nestjs/mongoose": "^8.0.1",
     "@nestjs/platform-fastify": "^8.0.6",
     "@types/bcrypt": "^5.0.0",

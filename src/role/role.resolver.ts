@@ -1,11 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Role } from './role.entity';
 import { RoleService } from './role.service';
-import {
-  AllRolesRead,
-  CreateRoleInput,
-  PaginationInput,
-} from './role-inputs.dto';
+import { CreateRoleInput, PaginationInput } from './role-inputs.dto';
 import { Types } from 'mongoose';
 
 @Resolver(() => Role)
